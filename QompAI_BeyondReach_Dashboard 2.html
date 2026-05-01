@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QompAI — Beyond Reach Compensation Dashboard</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#F0F4F8;min-height:100vh;padding:24px}
+:root{--navy:#1B3A5C;--teal:#1A7A8A;--teal-lt:#E1F5EE;--steel:#2E6DA4;--silver:#E8EEF4;--green:#1E7A4E;--green-lt:#F0FAF4;--amber:#BA7517;--amber-lt:#FAEEDA;--red:#A32D2D;--red-lt:#FCEBEB;--text:#1C2B3A;--text2:#4A5568;--border:#D0DBE8;--bg:#fff;--bg2:#F8FAFC}
+
+.container{max-width:1100px;margin:0 auto}
+
+.q-header{background:var(--navy);border-radius:14px;padding:20px 28px;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;box-shadow:0 4px 20px rgba(27,58,92,0.18)}
+.q-logo{display:flex;align-items:center;gap:12px}
+.q-logo-mark{width:38px;height:38px;background:var(--teal);border-radius:10px;display:flex;align-items:center;justify-content:center}
+.q-logo-mark svg{width:22px;height:22px}
+.q-logo-text{font-size:24px;font-weight:600;color:#fff;letter-spacing:-0.5px}
+.q-logo-sub{font-size:11px;color:#9FE1CB;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+.q-client-info{text-align:right}
+.q-client-name{font-size:16px;font-weight:600;color:#fff}
+.q-client-meta{font-size:12px;color:#9FE1CB;margin-top:3px}
+.q-pilot-badge{background:var(--teal);color:#9FE1CB;font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;margin-top:8px;display:inline-block}
+
+.q-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.q-stat{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.q-stat-label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px}
+.q-stat-val{font-size:26px;font-weight:600;color:var(--navy)}
+.q-stat-sub{font-size:11px;color:var(--text2);margin-top:4px}
+
+.q-tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:0}
+.q-tab{font-size:13px;padding:9px 18px;border-radius:8px 8px 0 0;cursor:pointer;color:var(--text2);border:none;background:transparent;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit}
+.q-tab.active{color:var(--teal);border-bottom:2px solid var(--teal);font-weight:600}
+.q-tab:hover:not(.active){background:var(--silver)}
+
+.q-filters{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.q-filter-label{font-size:12px;color:var(--text2);font-weight:500}
+.q-chip{font-size:12px;padding:5px 14px;border-radius:20px;cursor:pointer;border:1px solid var(--border);background:var(--bg);color:var(--text2);font-family:inherit}
+.q-chip.active{background:var(--teal);color:#E1F5EE;border-color:var(--teal)}
+.q-chip:hover:not(.active){background:var(--silver)}
+.q-search{flex:1;max-width:240px;font-size:13px;padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-family:inherit;outline:none}
+.q-search:focus{border-color:var(--teal)}
+
+.q-table-wrap{background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:18px;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.q-table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+.q-table th{background:var(--navy);color:#A8C4E0;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.7px;padding:11px 14px;text-align:left}
+.q-table td{padding:10px 14px;border-bottom:1px solid var(--silver);color:var(--text);vertical-align:middle}
+.q-table tr:last-child td{border-bottom:none}
+.q-table tr:hover td{background:#F5F9FF;cursor:pointer}
+.q-table tr.selected td{background:#E1F5EE}
+
+.q-badge{display:inline-block;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.q-badge.green{background:var(--green-lt);color:var(--green)}
+.q-badge.amber{background:var(--amber-lt);color:var(--amber)}
+.q-badge.red{background:var(--red-lt);color:var(--red)}
+
+.q-ratio-bar{height:6px;border-radius:3px;background:var(--silver);position:relative;width:80px;display:inline-block;vertical-align:middle;margin-left:6px}
+.q-ratio-fill{height:100%;border-radius:3px;position:absolute;top:0;left:0}
+
+.q-detail{background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:18px;display:none;box-shadow:0 2px 12px rgba(0,0,0,0.08)}
+.q-detail.open{display:block}
+.q-detail-header{background:var(--navy);padding:18px 22px;display:flex;justify-content:space-between;align-items:flex-start}
+.q-detail-title{font-size:20px;font-weight:600;color:#fff}
+.q-detail-bench{font-size:12px;color:#9FE1CB;margin-top:4px}
+.q-detail-close{background:rgba(255,255,255,0.15);border:none;color:#fff;border-radius:8px;padding:6px 14px;cursor:pointer;font-size:12px;font-family:inherit}
+.q-detail-close:hover{background:rgba(255,255,255,0.25)}
+.q-detail-body{padding:20px 22px}
+
+.q-snap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.q-snap{background:var(--bg2);border-radius:10px;padding:14px;text-align:center;border:1px solid var(--border)}
+.q-snap-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px}
+.q-snap-val{font-size:18px;font-weight:600;color:var(--navy)}
+
+.q-range-section{margin-bottom:18px}
+.q-range-loc{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--silver)}
+.q-range-bar-wrap{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.q-range-label{font-size:11px;color:var(--text2);width:90px;flex-shrink:0;text-align:right}
+.q-range-bar-outer{flex:1;height:24px;background:var(--bg2);border-radius:5px;position:relative;overflow:hidden;border:1px solid var(--border)}
+.q-range-bar-inner{height:100%;position:absolute;top:0;left:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;padding:0 8px;border-radius:4px}
+
+.q-charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+.q-chart-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.q-chart-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px}
+.q-chart-full{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,0.04);margin-bottom:18px}
+
+.legend{display:flex;gap:16px;margin-bottom:10px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)}
+.legend-swatch{width:12px;height:12px;border-radius:2px;flex-shrink:0}
+
+.q-footer{background:var(--teal-lt);border:1px solid #5DCAA5;border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:14px}
+.q-footer-icon{width:36px;height:36px;background:var(--teal);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.q-footer-text{font-size:12px;color:#0F6E56}
+.q-footer-bold{font-weight:600;color:#085041;margin-bottom:3px;font-size:14px}
+
+.panel{display:none}.panel.active{display:block}
+
+@media(max-width:700px){
+  .q-stats{grid-template-columns:repeat(2,1fr)}
+  .q-charts-grid{grid-template-columns:1fr}
+  .q-snap-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="q-header">
+  <div class="q-logo">
+    <div class="q-logo-mark">
+      <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="11" cy="11" r="8" stroke="#9FE1CB" stroke-width="2"/>
+        <path d="M11 7v4l3 2" stroke="#9FE1CB" stroke-width="1.8" stroke-linecap="round"/>
+        <circle cx="11" cy="11" r="1.8" fill="#9FE1CB"/>
+      </svg>
+    </div>
+    <div>
+      <div class="q-logo-text"><span style="color:#fff;font-weight:600">Qomp</span><span style="color:#00E5CC;font-weight:600">AI</span></div>
+      <div class="q-logo-sub">Compensation Intelligence</div>
+    </div>
+  </div>
+  <div class="q-client-info">
+    <div class="q-client-name">Heidi Hromidko — Beyond Reach</div>
+    <div class="q-client-meta">Chief People &amp; Resource Officer &nbsp;|&nbsp; Cedar Rapids, IA &nbsp;|&nbsp; April 21, 2026</div>
+    <div class="q-pilot-badge">&#9679; Pilot Partner</div>
+  </div>
+</div>
+
+<div class="q-stats">
+  <div class="q-stat"><div class="q-stat-label">Roles analyzed</div><div class="q-stat-val">18</div><div class="q-stat-sub">All roles benchmarked</div></div>
+  <div class="q-stat"><div class="q-stat-label">Avg compa-ratio</div><div class="q-stat-val" id="avg-compa">—</div><div class="q-stat-sub">vs Cedar Rapids midpoint</div></div>
+  <div class="q-stat"><div class="q-stat-label">Market competitive</div><div class="q-stat-val" id="mkt-count">—</div><div class="q-stat-sub">roles positioned 0.95–1.05</div></div>
+  <div class="q-stat"><div class="q-stat-label">Total base payroll</div><div class="q-stat-val" id="total-pay">—</div><div class="q-stat-sub">current base salaries</div></div>
+</div>
+
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchTab('roles',this)">All Roles</button>
+  <button class="q-tab" onclick="switchTab('charts',this)">Market Charts</button>
+</div>
+
+<div id="panel-roles" class="panel active">
+  <div class="q-filters">
+    <span class="q-filter-label">Filter:</span>
+    <button class="q-chip active" onclick="filterRoles('all',this)">All roles</button>
+    <button class="q-chip" onclick="filterRoles('competitive',this)">Market competitive</button>
+    <button class="q-chip" onclick="filterRoles('above',this)">Above market</button>
+    <input class="q-search" type="text" placeholder="Search roles..." oninput="searchRoles(this.value)">
+  </div>
+
+  <div class="q-table-wrap">
+    <table class="q-table">
+      <thead>
+        <tr>
+          <th style="width:21%">Role</th>
+          <th style="width:12%">Current base</th>
+          <th style="width:18%">Cedar Rapids range</th>
+          <th style="width:13%">Compa-ratio</th>
+          <th style="width:16%">Market position</th>
+          <th style="width:12%">OTE midpoint</th>
+          <th style="width:8%">Bonus %</th>
+        </tr>
+      </thead>
+      <tbody id="roles-tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="q-detail" id="detail-panel">
+    <div class="q-detail-header">
+      <div>
+        <div class="q-detail-title" id="d-title"></div>
+        <div class="q-detail-bench" id="d-bench"></div>
+      </div>
+      <button class="q-detail-close" onclick="closeDetail()">&#10005; Close</button>
+    </div>
+    <div class="q-detail-body">
+      <div class="q-snap-grid" id="d-snaps"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+        <div class="q-range-section">
+          <div class="q-range-loc">Cedar Rapids, IA — Telecom / Wholesale Connectivity</div>
+          <div id="d-bars-dsm"></div>
+        </div>
+        <div class="q-range-section">
+          <div class="q-range-loc">United States — National benchmark</div>
+          <div id="d-bars-us"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="panel-charts" class="panel">
+  <div class="q-charts-grid">
+    <div class="q-chart-card">
+      <div class="q-chart-title">Base salary midpoints by role</div>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-swatch" style="background:#2E6DA4"></span>Cedar Rapids mid</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:#1A7A8A"></span>US national mid</span>
+      </div>
+      <div style="position:relative;width:100%;height:540px"><canvas id="chart-mid" role="img" aria-label="Horizontal bar chart of base salary midpoints for all 18 roles, comparing Cedar Rapids and US national benchmarks">Base salary midpoints for 18 benchmarked roles at Beyond Reach, comparing Cedar Rapids IA market to US national benchmarks.</canvas></div>
+    </div>
+    <div class="q-chart-card">
+      <div class="q-chart-title">Compa-ratio vs market (Cedar Rapids)</div>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-swatch" style="background:#1D9E75"></span>Market competitive (0.95–1.05)</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:#EF9F27"></span>Above market (&gt;1.05)</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:#E24B4A"></span>Trailing (&lt;0.95)</span>
+      </div>
+      <div style="position:relative;width:100%;height:540px"><canvas id="chart-compa" role="img" aria-label="Horizontal bar chart of compa-ratios for each role, color coded green for market competitive, amber for above market, red for below market">Compa-ratio chart showing each role's current base salary relative to the Cedar Rapids market midpoint.</canvas></div>
+    </div>
+  </div>
+  <div class="q-chart-full">
+    <div class="q-chart-title">Salary range comparison — current base vs Cedar Rapids market range</div>
+    <div class="legend">
+      <span class="legend-item"><span class="legend-swatch" style="background:rgba(46,109,164,0.3)"></span>Market min</span>
+      <span class="legend-item"><span class="legend-swatch" style="background:#2E6DA4"></span>Market midpoint</span>
+      <span class="legend-item"><span class="legend-swatch" style="background:rgba(46,109,164,0.6)"></span>Market max</span>
+      <span class="legend-item"><span class="legend-swatch" style="background:#1A7A8A"></span>Current base</span>
+    </div>
+    <div style="position:relative;width:100%;height:360px"><canvas id="chart-range" role="img" aria-label="Grouped bar chart comparing current base salary to Cedar Rapids market minimum, midpoint and maximum for each of the 18 roles">Salary range comparison showing current base salaries plotted against Cedar Rapids market minimum, midpoint, and maximum for all 18 roles.</canvas></div>
+  </div>
+</div>
+
+<div class="q-footer">
+  <div class="q-footer-icon">
+    <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
+      <circle cx="11" cy="11" r="8" stroke="#9FE1CB" stroke-width="2"/>
+      <path d="M11 7v4l3 2" stroke="#9FE1CB" stroke-width="1.8" stroke-linecap="round"/>
+      <circle cx="11" cy="11" r="1.8" fill="#9FE1CB"/>
+    </svg>
+  </div>
+  <div>
+    <div class="q-footer-bold">Beyond Reach — QompAI Pilot Partner Dashboard</div>
+    <div class="q-footer-text">Certified by Stuart D. Reeves, CCP #4591371 | CECP #2648739 &nbsp;&middot;&nbsp; TSG Executive Search &amp; Compensation &nbsp;&middot;&nbsp; 9375 E. Shea Blvd., Suite 100, Scottsdale, AZ 85240 &nbsp;&middot;&nbsp; 602.613.5800 &nbsp;&middot;&nbsp; Live data updates coming with full QompAI platform launch</div>
+  </div>
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const roles=[
+  {title:"Network Engineer",bench:"Network Engineer II",code:"IT10000253",dsm:{min:82200,mid:89500,max:98000},us:{min:84500,mid:92000,max:100700},bonus:0.088,cur:90300,oteMid:97376,compa:1.009},
+  {title:"Director of New Sales",bench:"Sales Director",code:"EX05000085",dsm:{min:167400,mid:191700,max:219800},us:{min:171800,mid:196700,max:225600},bonus:0.21,cur:194300,oteMid:231957,compa:1.014},
+  {title:"Director of Channel Sales",bench:"Director of Channel Sales",code:"SM15000421B",dsm:{min:135600,mid:151600,max:168600},us:{min:137500,mid:153700,max:171000},bonus:0.18,cur:151500,oteMid:178888,compa:0.999},
+  {title:"Client Success Specialist",bench:"Customer Success Associate II",code:"SM15000514",dsm:{min:64800,mid:73800,max:83900},us:{min:66700,mid:75900,max:86300},bonus:0.077,cur:74700,oteMid:79483,compa:1.012},
+  {title:"Junior Network Admin",bench:"Network Administrator I",code:"IT10000275",dsm:{min:63400,mid:70000,max:77600},us:{min:65200,mid:72000,max:79800},bonus:0.06,cur:71100,oteMid:74200,compa:1.016},
+  {title:"NOC Technician I",bench:"Network Control Tech. I",code:"SC16000001",dsm:{min:57300,mid:64800,max:73600},us:{min:59000,mid:66700,max:75800},bonus:0.063,cur:66300,oteMid:68882,compa:1.023},
+  {title:"NOC Technician II",bench:"Network Control Tech. II",code:"SC16000002",dsm:{min:69700,mid:80000,max:91300},us:{min:71700,mid:82300,max:94000},bonus:0.083,cur:80800,oteMid:86640,compa:1.01},
+  {title:"Pricing Manager",bench:"Competitive Pricing Manager",code:"SM15000595",dsm:{min:117100,mid:130000,max:143700},us:{min:120400,mid:133600,max:147700},bonus:0.15,cur:130800,oteMid:149500,compa:1.006},
+  {title:"Service Delivery Coord. I",bench:"IT Project Manager I",code:"IT10000358",dsm:{min:71300,mid:79700,max:90000},us:{min:73100,mid:81800,max:92300},bonus:0.088,cur:81000,oteMid:86714,compa:1.016},
+  {title:"Service Delivery Coord. II",bench:"IT Project Manager II",code:"IT10000359",dsm:{min:89500,mid:99700,max:111000},us:{min:91500,mid:102000,max:113500},bonus:0.10,cur:100600,oteMid:109670,compa:1.009},
+  {title:"Service Delivery Coord. III",bench:"IT Project Manager III",code:"IT10000360",dsm:{min:110100,mid:120100,max:130500},us:{min:112300,mid:122500,max:133100},bonus:0.10,cur:120400,oteMid:132110,compa:1.002},
+  {title:"Sales Enablement Specialist",bench:"Sales Enablement Specialist II",code:"SM15000649B",dsm:{min:72400,mid:82600,max:95100},us:{min:74500,mid:85000,max:97900},bonus:0.10,cur:83800,oteMid:90860,compa:1.015},
+  {title:"Technical Business Analyst",bench:"Business Data Analyst II",code:"IT10000368",dsm:{min:77000,mid:85700,max:94900},us:{min:79100,mid:88100,max:97600},bonus:0.065,cur:86600,oteMid:91271,compa:1.011},
+  {title:"Sr. Software Developer",bench:"Software Systems Developer III",code:"IT10000503",dsm:{min:114300,mid:127400,max:140200},us:{min:117700,mid:131100,max:144300},bonus:0.10,cur:127600,oteMid:140140,compa:1.002},
+  {title:"Wireless Network Engineer",bench:"Telecom Engineer III",code:"EN0410060",dsm:{min:102600,mid:112400,max:122500},us:{min:105400,mid:115500,max:125900},bonus:0.10,cur:112800,oteMid:123640,compa:1.004},
+  {title:"Software Engineering Mgr",bench:"Software Engineering Manager",code:"IT10000149",dsm:{min:142600,mid:156200,max:171700},us:{min:146600,mid:160500,max:176400},bonus:0.15,cur:158000,oteMid:179630,compa:1.012},
+  {title:"Service Delivery PM",bench:"IT Project Manager IV",code:"IT10000618",dsm:{min:128600,mid:138600,max:149600},us:{min:132200,mid:142500,max:153700},bonus:0.129,cur:139300,oteMid:156479,compa:1.005},
+  {title:"Strategic Vendor & Partnerships Spec.",bench:"Partnership & Bus. Dev. Supervisor",code:"IT10000876B",dsm:{min:96500,mid:113000,max:133000},us:{min:99200,mid:116200,max:136700},bonus:0.142,cur:115600,oteMid:129046,compa:1.023},
+];
+
+function fmt(n){return'$'+Math.round(n).toLocaleString('en-US')}
+function pct(n){return(n*100).toFixed(1)+'%'}
+function marketLabel(c){
+  if(c<0.85)return['Below Market','red'];
+  if(c<0.95)return['Trailing Market','amber'];
+  if(c<1.05)return['Market Competitive','green'];
+  if(c<1.15)return['Above Market','amber'];
+  return['Significantly Above','amber'];
+}
+function compaColor(c){return c<0.95?'#A32D2D':c<1.05?'#1E7A4E':'#BA7517'}
+function ratioBarFill(c){return c<0.95?'#E24B4A':c<1.05?'#1D9E75':'#EF9F27'}
+
+let currentFilter='all',currentSearch='',selectedIdx=-1;
+
+function renderTable(){
+  const tbody=document.getElementById('roles-tbody');
+  tbody.innerHTML='';
+  roles.forEach((r,i)=>{
+    const matchFilter=currentFilter==='all'||(currentFilter==='competitive'&&r.compa>=0.95&&r.compa<1.05)||(currentFilter==='above'&&r.compa>=1.05);
+    const matchSearch=r.title.toLowerCase().includes(currentSearch.toLowerCase());
+    if(!matchFilter||!matchSearch)return;
+    const[lbl,cls]=marketLabel(r.compa);
+    const pctFill=Math.min(Math.round(((r.compa-0.7)/0.6)*100),100);
+    const tr=document.createElement('tr');
+    if(i===selectedIdx)tr.classList.add('selected');
+    tr.innerHTML=`
+      <td style="font-weight:600;font-size:13px">${r.title}</td>
+      <td>${fmt(r.cur)}</td>
+      <td style="font-size:12px;color:#4A5568">${fmt(r.dsm.min)} – ${fmt(r.dsm.max)}</td>
+      <td><span style="font-weight:600;color:${compaColor(r.compa)};font-size:13px">${r.compa.toFixed(3)}</span><span class="q-ratio-bar"><span class="q-ratio-fill" style="width:${pctFill}%;background:${ratioBarFill(r.compa)}"></span></span></td>
+      <td><span class="q-badge ${cls}">${lbl}</span></td>
+      <td>${fmt(r.oteMid)}</td>
+      <td style="color:#4A5568">${pct(r.bonus)}</td>
+    `;
+    tr.onclick=()=>openDetail(i);
+    tbody.appendChild(tr);
+  });
+}
+
+function filterRoles(f,el){
+  currentFilter=f;
+  document.querySelectorAll('.q-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderTable();
+}
+function searchRoles(v){currentSearch=v;renderTable()}
+
+function openDetail(idx){
+  selectedIdx=idx;
+  const r=roles[idx];
+  const[lbl,cls]=marketLabel(r.compa);
+  document.getElementById('d-title').textContent=r.title;
+  document.getElementById('d-bench').textContent='Benchmark: '+r.bench+' · Job Code: '+r.code+' · Bonus Target: '+pct(r.bonus);
+  document.getElementById('d-snaps').innerHTML=`
+    <div class="q-snap"><div class="q-snap-label">Current base</div><div class="q-snap-val">${fmt(r.cur)}</div></div>
+    <div class="q-snap"><div class="q-snap-label">OTE at midpoint</div><div class="q-snap-val">${fmt(r.oteMid)}</div></div>
+    <div class="q-snap"><div class="q-snap-label">Compa-ratio</div><div class="q-snap-val" style="color:${compaColor(r.compa)}">${r.compa.toFixed(3)}</div></div>
+    <div class="q-snap"><div class="q-snap-label">Market position</div><div class="q-snap-val" style="font-size:14px"><span class="q-badge ${cls}">${lbl}</span></div></div>
+  `;
+  function renderBars(id,data,bonus){
+    const maxVal=data.max*(1+bonus)*1.08;
+    const rows=[
+      ['25th — base',data.min,'#2E6DA4'],
+      ['25th — OTE',Math.round(data.min*(1+bonus)),'#1A7A8A'],
+      ['50th — base',data.mid,'#2E6DA4'],
+      ['50th — OTE',Math.round(data.mid*(1+bonus)),'#1A7A8A'],
+      ['75th — base',data.max,'#2E6DA4'],
+      ['75th — OTE',Math.round(data.max*(1+bonus)),'#1A7A8A'],
+    ];
+    document.getElementById(id).innerHTML=rows.map(([label,val,color])=>`
+      <div class="q-range-bar-wrap">
+        <span class="q-range-label">${label}</span>
+        <div class="q-range-bar-outer">
+          <div class="q-range-bar-inner" style="width:${Math.round((val/maxVal)*100)}%;background:${color};min-width:60px">${fmt(val)}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+  renderBars('d-bars-dsm',r.dsm,r.bonus);
+  renderBars('d-bars-us',r.us,r.bonus);
+  const panel=document.getElementById('detail-panel');
+  panel.classList.add('open');
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+  renderTable();
+}
+
+function closeDetail(){
+  selectedIdx=-1;
+  document.getElementById('detail-panel').classList.remove('open');
+  renderTable();
+}
+
+function switchTab(tab,el){
+  document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  if(tab==='charts')setTimeout(renderCharts,60);
+}
+
+let chartsRendered=false;
+function renderCharts(){
+  if(chartsRendered)return;
+  chartsRendered=true;
+  const labels=roles.map(r=>r.title.length>24?r.title.substring(0,24)+'…':r.title);
+  new Chart(document.getElementById('chart-mid'),{
+    type:'bar',
+    data:{labels,datasets:[
+      {label:'Cedar Rapids mid',data:roles.map(r=>r.dsm.mid),backgroundColor:'#2E6DA4',borderRadius:3},
+      {label:'US national mid',data:roles.map(r=>r.us.mid),backgroundColor:'#1A7A8A',borderRadius:3},
+    ]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{callback:v=>'$'+Math.round(v/1000)+'k',font:{size:10}},grid:{color:'rgba(0,0,0,0.05)'}},y:{ticks:{font:{size:10}}}}}
+  });
+  new Chart(document.getElementById('chart-compa'),{
+    type:'bar',
+    data:{labels,datasets:[{
+      label:'Compa-ratio',data:roles.map(r=>r.compa),
+      backgroundColor:roles.map(r=>r.compa<0.95?'#E24B4A':r.compa<1.05?'#1D9E75':'#EF9F27'),
+      borderRadius:3,
+    }]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{min:0.9,max:1.1,ticks:{font:{size:10},callback:v=>v.toFixed(2)},grid:{color:'rgba(0,0,0,0.05)'}},y:{ticks:{font:{size:10}}}}}
+  });
+  const shortLabels=roles.map(r=>r.title.length>13?r.title.substring(0,13)+'…':r.title);
+  new Chart(document.getElementById('chart-range'),{
+    type:'bar',
+    data:{labels:shortLabels,datasets:[
+      {label:'Market min',data:roles.map(r=>r.dsm.min),backgroundColor:'rgba(46,109,164,0.28)',borderRadius:2},
+      {label:'Market mid',data:roles.map(r=>r.dsm.mid),backgroundColor:'#2E6DA4',borderRadius:2},
+      {label:'Market max',data:roles.map(r=>r.dsm.max),backgroundColor:'rgba(46,109,164,0.58)',borderRadius:2},
+      {label:'Current base',data:roles.map(r=>r.cur),backgroundColor:'#1A7A8A',borderRadius:2},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{font:{size:9},maxRotation:45,autoSkip:false}},y:{ticks:{callback:v=>'$'+Math.round(v/1000)+'k',font:{size:10}},grid:{color:'rgba(0,0,0,0.05)'}}}}
+  });
+}
+
+const avg=roles.reduce((s,r)=>s+r.compa,0)/roles.length;
+document.getElementById('avg-compa').textContent=avg.toFixed(3);
+document.getElementById('mkt-count').textContent=roles.filter(r=>r.compa>=0.95&&r.compa<1.05).length+' roles';
+document.getElementById('total-pay').textContent='$'+roles.reduce((s,r)=>s+r.cur,0).toLocaleString('en-US');
+renderTable();
+</script>
+</body>
+</html>
