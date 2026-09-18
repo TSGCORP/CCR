@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CCR Technologies — Compensation Intelligence | Compifi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#D71D1A; --red-dk:#A81613; --ink:#0D0D0D; --ink-2:#2A2A2A;
+  --cream:#FBF7F1; --card:#FFFFFF; --line:#E6DFD5; --line-2:#D8CFC2;
+  --muted:#6B6259; --teal:#4A8A75; --amber:#C08A2E;
+  --shadow:0 1px 2px rgba(13,13,13,.05),0 8px 24px rgba(13,13,13,.06);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--cream);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+
+/* header */
+header{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50}
+.hdr{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 0}
+.brand{display:flex;align-items:baseline;gap:12px}
+.mark{font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.mark .a{color:var(--ink)} .mark .b{color:var(--red)}
+.brand .sep{width:1px;height:26px;background:var(--line-2)}
+.brand .ctx{font-size:13px;color:var(--muted);font-weight:500}
+.brand .ctx strong{display:block;color:var(--ink);font-size:15px;font-weight:700}
+.hdr .meta{text-align:right;font-size:12px;color:var(--muted);line-height:1.6}
+.hdr .meta strong{color:var(--ink)}
+
+/* tabs */
+nav.tabs{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:73px;z-index:49}
+.tabrow{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tabrow::-webkit-scrollbar{display:none}
+.tab{appearance:none;border:0;background:transparent;font:inherit;font-weight:600;font-size:14px;color:var(--muted);
+  padding:14px 18px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:.15s}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--red);border-bottom-color:var(--red)}
+.tab .cnt{display:inline-block;margin-left:7px;font-size:11px;font-weight:700;background:var(--cream);
+  border:1px solid var(--line);border-radius:999px;padding:1px 7px;color:var(--muted)}
+.tab[aria-selected="true"] .cnt{background:#FDECEC;border-color:#F5C9C8;color:var(--red-dk)}
+
+main{padding:28px 0 64px}
+.panel[hidden]{display:none}
+.lede{font-size:14px;color:var(--muted);margin:0 0 20px;max-width:760px}
+h2.sec{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:32px 0 12px}
+
+/* stat cards */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:var(--shadow)}
+.stat .k{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.stat .v{font-size:28px;font-weight:800;letter-spacing:-.02em;margin-top:6px;line-height:1.1}
+.stat .s{font-size:12px;color:var(--muted);margin-top:5px}
+.v.red{color:var(--red)} .v.teal{color:var(--teal)} .v.amber{color:var(--amber)}
+
+/* entity cards */
+.ents{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.ent{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;box-shadow:var(--shadow);
+  cursor:pointer;transition:.15s;text-align:left;font:inherit;width:100%}
+.ent:hover{border-color:var(--red);transform:translateY(-2px)}
+.ent h3{margin:0;font-size:17px;font-weight:700}
+.ent .p{font-size:12px;color:var(--muted);margin-top:4px}
+.ent .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.ent .grid div{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+.ent .grid b{display:block;font-size:17px;color:var(--ink);letter-spacing:-.01em;margin-top:3px}
+.ent .go{margin-top:14px;font-size:12px;font-weight:700;color:var(--red)}
+
+/* toolbar */
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0 14px}
+.search{flex:1;min-width:220px;position:relative}
+.search input{width:100%;padding:11px 14px 11px 36px;border:1px solid var(--line-2);border-radius:9px;
+  font:inherit;font-size:14px;background:var(--card);color:var(--ink)}
+.search input:focus{outline:2px solid var(--red);outline-offset:-1px;border-color:transparent}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.45}
+select{padding:11px 12px;border:1px solid var(--line-2);border-radius:9px;font:inherit;font-size:13px;background:var(--card);color:var(--ink);cursor:pointer}
+
+/* table */
+.tablewrap{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:820px}
+thead th{background:#F7F2EA;text-align:left;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--muted);padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap;cursor:pointer;user-select:none}
+thead th:hover{color:var(--ink)}
+thead th.num,td.num{text-align:right}
+thead th.ctr,td.ctr{text-align:center}
+tbody tr{border-bottom:1px solid #F0EAE1;cursor:pointer;transition:background .12s}
+tbody tr:last-child{border-bottom:0}
+tbody tr:hover{background:#FDF9F4}
+td{padding:12px 14px;vertical-align:middle}
+td .t{font-weight:600}
+td .b{font-size:11px;color:var(--muted);margin-top:2px}
+.badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  padding:4px 9px;border-radius:999px;white-space:nowrap}
+.bg-ok{background:#EAF3EF;color:var(--teal)}
+.bg-lo{background:#FDECEC;color:var(--red-dk)}
+.bg-hi{background:#FBF1DF;color:var(--amber)}
+.mono{font-variant-numeric:tabular-nums}
+
+/* range bar */
+.rb{position:relative;height:8px;background:#EFE8DE;border-radius:999px;min-width:120px}
+.rb .fill{position:absolute;top:0;bottom:0;background:linear-gradient(90deg,#F3D9D8,#E9B0AE);border-radius:999px}
+.rb .mid{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--muted);opacity:.55}
+.rb .dot{position:absolute;top:50%;width:11px;height:11px;border-radius:50%;transform:translate(-50%,-50%);
+  border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.28)}
+
+/* drawer */
+.ovl{position:fixed;inset:0;background:rgba(13,13,13,.42);backdrop-filter:blur(2px);z-index:100;opacity:0;pointer-events:none;transition:.2s}
+.ovl.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);background:var(--cream);z-index:101;
+  transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);overflow-y:auto;box-shadow:-8px 0 40px rgba(0,0,0,.16)}
+.drawer.on{transform:none}
+.dhd{position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--line);padding:20px 24px;display:flex;gap:14px;justify-content:space-between;align-items:flex-start}
+.dhd h3{margin:0;font-size:19px;font-weight:800;letter-spacing:-.01em}
+.dhd .sub{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.6}
+.x{appearance:none;border:1px solid var(--line-2);background:var(--card);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:17px;color:var(--muted);flex:none}
+.x:hover{border-color:var(--red);color:var(--red)}
+.dbody{padding:22px 24px 48px}
+.kv{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:22px}
+.kv .c{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.kv .c .k{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.kv .c .v{font-size:20px;font-weight:800;margin-top:5px;letter-spacing:-.01em}
+.mt{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:13px;margin-bottom:8px}
+.mt th{background:#F7F2EA;font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding:9px 12px;text-align:right;font-weight:700}
+.mt th:first-child{text-align:left}
+.mt td{padding:10px 12px;text-align:right;border-top:1px solid #F0EAE1;font-variant-numeric:tabular-nums}
+.mt td:first-child{text-align:left;font-weight:600}
+.mt tr.hl td{background:#FDF6EE;font-weight:700}
+.note{font-size:12px;color:var(--muted);background:#FDF6EE;border:1px solid #F0E2CE;border-radius:9px;padding:11px 13px;margin-bottom:18px}
+.viz{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:22px}
+.viz .lbl{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-weight:600;margin-bottom:9px}
+
+/* distribution */
+.dist{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;box-shadow:var(--shadow)}
+.drow{display:flex;align-items:center;gap:12px;margin-bottom:11px}
+.drow:last-child{margin-bottom:0}
+.drow .nm{width:152px;font-size:12px;font-weight:600;flex:none}
+.drow .track{flex:1;height:22px;background:#F4EEE5;border-radius:6px;overflow:hidden}
+.drow .bar{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:9px;
+  color:#fff;font-size:11px;font-weight:700;min-width:26px;transition:width .5s ease}
+.drow .ct{width:42px;text-align:right;font-size:12px;font-weight:700;color:var(--muted);flex:none}
+
+footer{border-top:1px solid var(--line);background:var(--card);padding:26px 0;margin-top:20px}
+.ft{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}
+.ft .m{font-weight:800;font-size:16px}
+.empty{padding:44px;text-align:center;color:var(--muted);font-size:14px}
+@media(max-width:720px){
+  .hdr{flex-direction:column;align-items:flex-start;gap:10px}
+  .hdr .meta{text-align:left}
+  nav.tabs{top:auto;position:static}
+  .kv{grid-template-columns:1fr}
+  .drow .nm{width:104px;font-size:11px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hdr">
+    <div class="brand">
+      <div class="mark"><span class="a">comp</span><span class="b">ifi</span></div>
+      <div class="sep"></div>
+      <div class="ctx"><strong>CCR Technologies</strong>Compensation Intelligence</div>
+    </div>
+    <div class="meta">
+      Prepared for <strong>Heidi Hromidko</strong>, Chief People &amp; Resource Officer<br>
+      Effective September 2026 &nbsp;·&nbsp; Benchmark data via Salary.com
+    </div>
+  </div>
+</header>
+
+<nav class="tabs"><div class="wrap"><div class="tabrow" id="tabrow" role="tablist"></div></div></nav>
+
+<main class="wrap" id="main"></main>
+
+<footer><div class="wrap ft">
+  <div><span class="m"><span style="color:var(--ink)">comp</span><span style="color:var(--red)">ifi</span></span></div>
+  <div>Prepared by TSG Compensation Consulting &nbsp;·&nbsp; Stuart D. Reeves, CCP, CECP, GPHR</div>
+  <div>Benchmark data effective September 2026</div>
+</div></footer>
+
+<div class="ovl" id="ovl"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+
+<script>
+const DATA = {"Beyond Reach":{"meta":{"profile":"<25 FTE \u00b7 $20M Revenue \u00b7 Telecom (Wholesale Connectivity)","short":"Telecom \u2014 Wholesale Connectivity"},"roles":[{"title":"Network Engineer","bench":"Network Engineer II","code":"IT10000253","loc":"Cedar Rapids, IA","note":null,"l":[82200.0,89500.0,98000.0],"us":[84500.0,92000.0,100700.0],"bonus":0.088,"cur":90300.0,"ote":97376.0,"compa":1.0089385474860335},{"title":"Director of New Sales","bench":"Sales Director","code":"EX05000085","loc":"Cedar Rapids, IA","note":null,"l":[167400.0,191700.0,219800.0],"us":[171800.0,196700.0,225600.0],"bonus":0.21,"cur":194300.0,"ote":231957.0,"compa":1.0135628586332812},{"title":"Director of Channel Sales","bench":"Director of Channel Sales","code":"SM15000421B","loc":"Cedar Rapids, IA","note":null,"l":[135600.0,151600.0,168600.0],"us":[137500.0,153700.0,171000.0],"bonus":0.18,"cur":151500.0,"ote":178888.0,"compa":0.9993403693931399},{"title":"Client Success Specialist","bench":"Customer Success Associate II","code":"SM15000514","loc":"Cedar Rapids, IA","note":null,"l":[64800.0,73800.0,83900.0],"us":[66700.0,75900.0,86300.0],"bonus":0.077,"cur":74700.0,"ote":79482.59999999999,"compa":1.0121951219512195},{"title":"Junior Network Administrator","bench":"Network Administrator I","code":"IT10000275","loc":"Cedar Rapids, IA","note":null,"l":[63400.0,70000.0,77600.0],"us":[65200.0,72000.0,79800.0],"bonus":0.06,"cur":71100.0,"ote":74200.0,"compa":1.0157142857142858},{"title":"NOC Technician I","bench":"Network Control Tech. I","code":"SC16000001","loc":"Cedar Rapids, IA","note":null,"l":[57300.0,64800.0,73600.0],"us":[59000.0,66700.0,75800.0],"bonus":0.063,"cur":66300.0,"ote":68882.4,"compa":1.0231481481481481},{"title":"NOC Technician II","bench":"Network Control Tech. II","code":"SC16000002","loc":"Cedar Rapids, IA","note":null,"l":[69700.0,80000.0,91300.0],"us":[71700.0,82300.0,94000.0],"bonus":0.083,"cur":80800.0,"ote":86640.0,"compa":1.01},{"title":"Pricing Manager","bench":"Competitive Pricing Manager","code":"SM15000595","loc":"Cedar Rapids, IA","note":null,"l":[117100.0,130000.0,143700.0],"us":[120400.0,133600.0,147700.0],"bonus":0.15,"cur":130800.0,"ote":149500.0,"compa":1.0061538461538462},{"title":"Service Delivery Coordinator I","bench":"IT Project Manager I","code":"IT10000358","loc":"Cedar Rapids, IA","note":null,"l":[71300.0,79700.0,90000.0],"us":[73100.0,81800.0,92300.0],"bonus":0.088,"cur":81000.0,"ote":86713.6,"compa":1.0163111668757843},{"title":"Service Delivery Coordinator II","bench":"IT Project Manager II","code":"IT10000359","loc":"Cedar Rapids, IA","note":null,"l":[89500.0,99700.0,111000.0],"us":[91500.0,102000.0,113500.0],"bonus":0.1,"cur":100600.0,"ote":109670.00000000001,"compa":1.0090270812437312},{"title":"Service Delivery Coordinator III","bench":"IT Project Manager III","code":"IT10000360","loc":"Cedar Rapids, IA","note":null,"l":[110100.0,120100.0,130500.0],"us":[112300.0,122500.0,133100.0],"bonus":0.1,"cur":120400.0,"ote":132110.0,"compa":1.0024979184013323},{"title":"Sales Enablement Specialist","bench":"Sales Enablement Specialist II","code":"SM15000649B","loc":"Cedar Rapids, IA","note":null,"l":[72400.0,82600.0,95100.0],"us":[74500.0,85000.0,97900.0],"bonus":0.1,"cur":83800.0,"ote":90860.00000000001,"compa":1.0145278450363195},{"title":"Technical Business Analyst","bench":"Business Data Analyst II","code":"IT10000368","loc":"Cedar Rapids, IA","note":null,"l":[77000.0,85700.0,94900.0],"us":[79100.0,88100.0,97600.0],"bonus":0.065,"cur":86600.0,"ote":91270.5,"compa":1.0105017502917153},{"title":"Sr. Software Developer","bench":"Software Systems Developer III","code":"IT10000503","loc":"Cedar Rapids, IA","note":null,"l":[114300.0,127400.0,140200.0],"us":[117700.0,131100.0,144300.0],"bonus":0.1,"cur":127600.0,"ote":140140.0,"compa":1.0015698587127158},{"title":"Wireless Network Engineer","bench":"Telecommunications Engineer III","code":"EN0410060","loc":"Cedar Rapids, IA","note":null,"l":[102600.0,112400.0,122500.0],"us":[105400.0,115500.0,125900.0],"bonus":0.1,"cur":112800.0,"ote":123640.00000000001,"compa":1.00355871886121},{"title":"Software Engineering Manager","bench":"Software Engineering Manager","code":"IT10000149","loc":"Cedar Rapids, IA","note":null,"l":[142600.0,156200.0,171700.0],"us":[146600.0,160500.0,176400.0],"bonus":0.15,"cur":158000.0,"ote":179630.0,"compa":1.0115236875800255},{"title":"Service Delivery Project Manager","bench":"IT Project Manager IV","code":"IT10000618","loc":"Cedar Rapids, IA","note":null,"l":[128600.0,138600.0,149600.0],"us":[132200.0,142500.0,153700.0],"bonus":0.129,"cur":139300.0,"ote":156479.4,"compa":1.005050505050505},{"title":"Strategic Vendor and Partnerships Spec.","bench":"Partnership Bus Dev. Supervisor","code":"IT10000876B","loc":"Cedar Rapids, IA","note":null,"l":[96500.0,113000.0,133000.0],"us":[99200.0,116200.0,136700.0],"bonus":0.142,"cur":115600.0,"ote":129045.99999999999,"compa":1.023008849557522},{"title":"Senior Wireless Network Engineer","bench":"Telecommunications Engineer IV","code":"EN04100079","loc":"Cedar Rapids, IA","note":null,"l":[121100.0,133700.0,146900.0],"us":[124200.0,137100.0,150700.0],"bonus":0.088,"cur":130000.0,"ote":145465.6,"compa":0.9723261032161555},{"title":"NOC Lead","bench":"Network Control Tech III","code":"SC16000003","loc":"Cedar Rapids, IA","note":null,"l":[89300.0,101700.0,115600.0],"us":[91900.0,104600.0,118900.0],"bonus":0.1,"cur":100000.0,"ote":111870.00000000001,"compa":0.983284169124877},{"title":"Project Technician","bench":"Project Engineering Tech II","code":"EN04100486","loc":"Cedar Rapids, IA","note":null,"l":[56900.0,64900.0,73100.0],"us":[58500.0,66700.0,75200.0],"bonus":0.042,"cur":62000.0,"ote":67625.8,"compa":0.9553158705701078},{"title":"Director of Wholesale","bench":"Channel Sales Director","code":"SM15000421","loc":"Fort Lauderdale, FL","note":"Position based in Pembroke Pines, FL; Fort Lauderdale metro used as benchmark market.","l":[137400.0,153600.0,170800.0],"us":[139000.0,155300.0,172800.0],"bonus":0.18,"cur":150000.0,"ote":181248.0,"compa":0.9765625},{"title":"Sourcing Operations Coordinator","bench":"Strategic Sourcing Specialist II","code":"MM18000245","loc":"Cedar Rapids, IA","note":null,"l":[71600.0,79200.0,87900.0],"us":[73600.0,81500.0,90400.0],"bonus":0.08,"cur":80000.0,"ote":85536.0,"compa":1.0101010101010102}]},"Shared Services":{"meta":{"profile":"100\u2013200 FTE \u00b7 $50M Revenue \u00b7 IT Consulting","short":"IT Consulting"},"roles":[{"title":"Senior IT Support Analyst","bench":"Help Desk Support Specialist III","code":"IT10000035","loc":"Cedar Rapids, IA","note":null,"l":[61400.0,68000.0,75800.0],"us":[63300.0,70000.0,78100.0],"bonus":0.056,"cur":70000.0,"ote":71808.0,"compa":1.0294117647058822},{"title":"Senior Infrastructure Administrator","bench":"Systems Administrator III","code":"IT10000136","loc":"Cedar Rapids, IA","note":null,"l":[102000.0,114500.0,127000.0],"us":[104800.0,117600.0,130400.0],"bonus":0.1,"cur":105000.0,"ote":125950.00000000001,"compa":0.9170305676855895},{"title":"Infrastructure Engineer","bench":"Enterprise Infrastructure Architect II","code":"IT10000488","loc":"Cedar Rapids, IA","note":null,"l":[98300.0,113900.0,132100.0],"us":[101000.0,117100.0,135800.0],"bonus":0.137,"cur":115000.0,"ote":129504.3,"compa":1.009657594381036},{"title":"Database Administrator I","bench":"Database Administrator II","code":"IT10000022","loc":"Phoenix, AZ","note":null,"l":[90900.0,102100.0,114100.0],"us":[90700.0,101900.0,113800.0],"bonus":0.089,"cur":105000.0,"ote":111186.9,"compa":1.0284035259549462}]},"CCR Media":{"meta":{"profile":"40 FTE \u00b7 $40M Revenue \u00b7 Media & Advertising","short":"Media & Advertising"},"roles":[{"title":"R&D Software Developer","bench":"Product Manager III","code":"IT10000093","loc":"Cedar Rapids, IA","note":null,"l":[108200.0,118900.0,130200.0],"us":[111400.0,122400.0,134000.0],"bonus":0.13,"cur":125000.0,"ote":134357.0,"compa":1.0513036164844407},{"title":"Data Engineer","bench":"Data Engineer II","code":"IT10000878","loc":"Cedar Rapids, IA","note":null,"l":[96300.0,108300.0,121400.0],"us":[99000.0,111400.0,124900.0],"bonus":0.095,"cur":105000.0,"ote":118588.5,"compa":0.9695290858725761},{"title":"Director of Client Services","bench":"Account Management Director","code":"SM15000519","loc":"Cedar Rapids, IA","note":null,"l":[174400.0,201100.0,229200.0],"us":[178900.0,206200.0,235000.0],"bonus":0.25,"cur":199000.0,"ote":251375.0,"compa":0.989557434112382},{"title":"Director of Engineering","bench":"Network Engineering Director","code":"IT10000737","loc":"Cedar Rapids, IA","note":null,"l":[216400.0,239800.0,257100.0],"us":[193700.0,204000.0,216800.0],"bonus":0.2,"cur":200000.0,"ote":287760.0,"compa":0.8340283569641368},{"title":"Director of Operations","bench":"Operations Director","code":"EX05000343","loc":"Cedar Rapids, IA","note":null,"l":[154200.0,164700.0,175700.0],"us":[158100.0,168900.0,180200.0],"bonus":0.25,"cur":162400.0,"ote":205875.0,"compa":0.9860352155434122},{"title":"Director of Technology Strategy & Partnerships","bench":"Channel Marketing Director","code":"SM15000659","loc":"Cedar Rapids, IA","note":null,"l":[171200.0,188600.0,206300.0],"us":[175500.0,193400.0,211500.0],"bonus":0.25,"cur":191600.0,"ote":235750.0,"compa":1.0159066808059385},{"title":"Engineering Program Manager","bench":"Engineering Program Manager IV","code":"EN04100440","loc":"Cedar Rapids, IA","note":null,"l":[151700.0,166200.0,192500.0],"us":[155500.0,170400.0,197400.0],"bonus":0.1,"cur":168200.0,"ote":182820.00000000003,"compa":1.0120336943441637},{"title":"Manager of Development","bench":"Software Engineering Manager","code":"IT10000149","loc":"Cedar Rapids, IA","note":null,"l":[145800.0,159700.0,175500.0],"us":[147700.0,164000.0,180200.0],"bonus":0.15,"cur":164000.0,"ote":183655.0,"compa":1.0269254852849092},{"title":"Manager of Streaming Content Operations","bench":"Digital Content Curation Manager","code":"IT10000291","loc":"Cedar Rapids, IA","note":null,"l":[91600.0,104500.0,120000.0],"us":[94300.0,107600.0,123500.0],"bonus":0.133,"cur":103400.0,"ote":118398.5,"compa":0.9894736842105263},{"title":"Manager of Tech Ops","bench":"IT Operations Manager","code":"IT10000246C","loc":"Cedar Rapids, IA","note":null,"l":[134600.0,148900.0,163500.0],"us":[138400.0,153100.0,168100.0],"bonus":0.12,"cur":150200.0,"ote":166768.00000000003,"compa":1.0087306917394225},{"title":"NOC Supervisor","bench":"Network Operations Center Supervisor","code":"IT10000403D","loc":"Cedar Rapids, IA","note":null,"l":[99800.0,114200.0,131200.0],"us":[102300.0,117100.0,134500.0],"bonus":0.088,"cur":115900.0,"ote":124249.6,"compa":1.0148861646234677},{"title":"NOC Technician - Tier I","bench":"Network Control Technician I","code":"SC16000001","loc":"Cedar Rapids, IA","note":null,"l":[61000.0,69000.0,78300.0],"us":[62700.0,70900.0,80500.0],"bonus":0.063,"cur":69500.0,"ote":73347.0,"compa":1.0072463768115942},{"title":"NOC Technician - Tier II","bench":"Network Control Technician II","code":"SC16000002","loc":"Cedar Rapids, IA","note":null,"l":[74200.0,85200.0,97200.0],"us":[76300.0,87600.0,100000.0],"bonus":0.083,"cur":85000.0,"ote":92271.59999999999,"compa":0.9976525821596244},{"title":"OTT Technician","bench":"Digital Asset Management Specialist I","code":"SSC15000513","loc":"Cedar Rapids, IA","note":null,"l":[55500.0,61800.0,69800.0],"us":[57100.0,63500.0,71800.0],"bonus":0.06,"cur":60000.0,"ote":65508.0,"compa":0.970873786407767},{"title":"OTT Technician Tier II","bench":"Digital Asset Management Specialist II","code":"SSC15000514","loc":"Cedar Rapids, IA","note":null,"l":[67700.0,76100.0,85000.0],"us":[69700.0,78300.0,87500.0],"bonus":0.089,"cur":75000.0,"ote":82872.9,"compa":0.985545335085414},{"title":"Product Engineer","bench":"Product Design Engineer III","code":"EN04100147","loc":"Eau Claire, WI","note":null,"l":[106600.0,116000.0,127200.0],"us":[109200.0,118800.0,130300.0],"bonus":0.07,"cur":115000.0,"ote":124120.0,"compa":0.9913793103448276},{"title":"Project Technician Tier I","bench":"Project Engineering Technician I","code":"EN04100485","loc":"Cedar Rapids, IA","note":null,"l":[47600.0,56700.0,64300.0],"us":[48900.0,58300.0,66200.0],"bonus":0.035,"cur":58000.0,"ote":58684.49999999999,"compa":1.0229276895943562},{"title":"Project Technician Tier III","bench":"Project Engineering Technician II","code":"EN04100486","loc":"Cedar Rapids, IA","note":null,"l":[57900.0,66000.0,74400.0],"us":[59500.0,67900.0,76500.0],"bonus":0.042,"cur":65000.0,"ote":68772.0,"compa":0.9848484848484849},{"title":"Provisioning Technician","bench":"Provisioning Engineer I","code":"EN04100157","loc":"Cedar Rapids, IA","note":null,"l":[54300.0,61800.0,69100.0],"us":[57900.0,65700.0,72900.0],"bonus":0.05,"cur":63000.0,"ote":64890.0,"compa":1.0194174757281553},{"title":"RF Technician","bench":"Radio Frequency Engineer III","code":"EN04100288","loc":"Cedar Rapids, IA","note":null,"l":[116300.0,125300.0,134000.0],"us":[119600.0,128900.0,137800.0],"bonus":0.069,"cur":125000.0,"ote":133945.69999999998,"compa":0.9976057462090981},{"title":"Senior Software Developer","bench":"Software Developer III","code":"IT10000003C","loc":"Cedar Rapids, IA","note":null,"l":[98700.0,108500.0,119300.0],"us":[101400.0,111500.0,122500.0],"bonus":0.1,"cur":110000.0,"ote":119350.00000000001,"compa":1.0138248847926268},{"title":"Software Developer","bench":"Software Developer II","code":"IT10000002C","loc":"Cedar Rapids, IA","note":null,"l":[75400.0,83000.0,91800.0],"us":[77500.0,85400.0,94400.0],"bonus":0.1,"cur":84000.0,"ote":91300.00000000001,"compa":1.0120481927710843},{"title":"Solution Engineer","bench":"Solution Architect III","code":"IT10000912","loc":"Cedar Rapids, IA","note":null,"l":[117000.0,133900.0,151800.0],"us":[120100.0,137500.0,155900.0],"bonus":0.1,"cur":135000.0,"ote":147290.0,"compa":1.0082150858849888},{"title":"Director of Strategic Partners","bench":"Product/Brand Marketing Director","code":"SM15000520","loc":"Cedar Rapids, IA","note":null,"l":[174100.0,192600.0,213000.0],"us":[178200.0,197200.0,218100.0],"bonus":0.255,"cur":195000.0,"ote":241712.99999999997,"compa":1.0124610591900312},{"title":"Systems Administrator","bench":"Help Desk Support Specialist III","code":"IT10000035","loc":"Cedar Rapids, IA","note":null,"l":[57000.0,63100.0,70300.0],"us":[58700.0,64900.0,72400.0],"bonus":0.056,"cur":60000.0,"ote":66633.6,"compa":0.9508716323296355},{"title":"Director of Streaming Product","bench":"Product Management Director","code":"IT10000599","loc":"Chicago, IL","note":null,"l":[188800.0,206200.0,224600.0],"us":[181100.0,197800.0,215400.0],"bonus":0.25,"cur":195000.0,"ote":257750.0,"compa":0.9456838021338506},{"title":"Media Operations Technician","bench":"Technical Customer Support Specialist I","code":"SM15000498","loc":"Cedar Rapids, IA","note":null,"l":[54200.0,62600.0,71100.0],"us":[55700.0,64400.0,73100.0],"bonus":0.05,"cur":62000.0,"ote":65730.0,"compa":0.9904153354632588},{"title":"Senior Media Operations Technician","bench":"Technical Customer Support Specialist II","code":"SM15000499","loc":"Cedar Rapids, IA","note":null,"l":[64300.0,74300.0,84400.0],"us":[66100.0,76400.0,86800.0],"bonus":0.05,"cur":75000.0,"ote":78015.0,"compa":1.009421265141319}]}};
+const money = n => '$' + Math.round(n).toLocaleString('en-US');
+const pct = n => (n*100).toFixed(n*100 % 1 === 0 ? 0 : 1) + '%';
+const band = c => c < 0.90 ? 'Below Market' : (c > 1.10 ? 'Above Market' : 'Market Competitive');
+const bcls = c => c < 0.90 ? 'bg-lo' : (c > 1.10 ? 'bg-hi' : 'bg-ok');
+const bcol = c => c < 0.90 ? '#D71D1A' : (c > 1.10 ? '#C08A2E' : '#4A8A75');
+
+const ENTS = Object.keys(DATA);
+ENTS.forEach(e => DATA[e].roles.forEach(r => { r.entity = e; }));
+const ALL = ENTS.flatMap(e => DATA[e].roles);
+
+function agg(rs){
+  const cur = rs.reduce((a,r)=>a+r.cur,0), mid = rs.reduce((a,r)=>a+r.l[1],0);
+  return { n:rs.length, cur, mid, gap:mid-cur, port:cur/mid,
+    lo:rs.filter(r=>r.compa<0.90).length, hi:rs.filter(r=>r.compa>1.10).length,
+    ok:rs.filter(r=>r.compa>=0.90&&r.compa<=1.10).length,
+    belowMid:rs.filter(r=>r.compa<1).length };
+}
+
+/* ---------- tabs ---------- */
+const TABS = [{id:'overview',label:'Portfolio Overview',count:ALL.length}]
+  .concat(ENTS.map(e=>({id:e,label:e,count:DATA[e].roles.length})));
+const tabrow = document.getElementById('tabrow');
+tabrow.innerHTML = TABS.map((t,i)=>
+  `<button class="tab" role="tab" data-tab="${t.id}" aria-selected="${i===0}">${t.label}<span class="cnt">${t.count}</span></button>`
+).join('');
+const main = document.getElementById('main');
+main.innerHTML = TABS.map((t,i)=>`<section class="panel" id="p-${cssId(t.id)}" ${i?'hidden':''}></section>`).join('');
+function cssId(s){ return s.replace(/[^A-Za-z0-9]+/g,'-'); }
+
+tabrow.addEventListener('click', e=>{
+  const b = e.target.closest('.tab'); if(!b) return;
+  [...tabrow.children].forEach(x=>x.setAttribute('aria-selected', x===b));
+  TABS.forEach(t=>{ document.getElementById('p-'+cssId(t.id)).hidden = (t.id !== b.dataset.tab); });
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+/* ---------- overview ---------- */
+function renderOverview(){
+  const a = agg(ALL);
+  const el = document.getElementById('p-overview');
+  el.innerHTML = `
+  <p class="lede">A consolidated view of <strong>${a.n} benchmarked roles</strong> across all three CCR Technologies entities,
+  measured against current market data effective September 2026. Select any entity tab to review that population on its own,
+  or click any role for its full benchmark detail.</p>
+
+  <div class="stats">
+    <div class="stat"><div class="k">Roles Benchmarked</div><div class="v">${a.n}</div><div class="s">Across ${ENTS.length} entities</div></div>
+    <div class="stat"><div class="k">Portfolio Compa-Ratio</div><div class="v ${a.port>=0.97&&a.port<=1.03?'teal':'amber'}">${a.port.toFixed(3)}</div><div class="s">Base vs. market midpoint</div></div>
+    <div class="stat"><div class="k">Market Competitive</div><div class="v teal">${a.ok} <span style="font-size:15px;color:var(--muted);font-weight:600">of ${a.n}</span></div><div class="s">Within 0.90 – 1.10</div></div>
+    <div class="stat"><div class="k">Gap to Midpoint</div><div class="v ${a.gap>0?'red':'teal'}">${money(Math.abs(a.gap))}</div><div class="s">${a.gap>0?'Under':'Over'} aggregate midpoint</div></div>
+    <div class="stat"><div class="k">Total Base Spend</div><div class="v">${money(a.cur)}</div><div class="s">Market midpoint ${money(a.mid)}</div></div>
+  </div>
+
+  <h2 class="sec">By Entity</h2>
+  <div class="ents">${ENTS.map(e=>{
+    const x = agg(DATA[e].roles);
+    return `<button class="ent" data-goto="${e}">
+      <h3>${e}</h3><div class="p">${DATA[e].meta.profile}</div>
+      <div class="grid">
+        <div>Roles<b>${x.n}</b></div>
+        <div>Compa<b style="color:${bcol(x.port)}">${x.port.toFixed(3)}</b></div>
+        <div>Gap<b>${money(Math.abs(x.gap))}</b></div>
+      </div>
+      <div class="go">View ${e} →</div></button>`;
+  }).join('')}</div>
+
+  <h2 class="sec">Market Position Distribution</h2>
+  <div class="dist">${distRows(ALL)}</div>
+
+  <h2 class="sec">All Roles</h2>
+  ${tableBlock('overview', ALL, true)}`;
+
+  el.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>{
+    [...tabrow.children].forEach(x=>x.setAttribute('aria-selected', x.dataset.tab===b.dataset.goto));
+    TABS.forEach(t=>{ document.getElementById('p-'+cssId(t.id)).hidden = (t.id !== b.dataset.goto); });
+    window.scrollTo({top:0,behavior:'smooth'});
+  }));
+  wireTable('overview', ALL, true);
+}
+
+function distRows(rs){
+  const buckets = [
+    ['Below Market (<0.90)', rs.filter(r=>r.compa<0.90).length, '#D71D1A'],
+    ['0.90 – 0.95', rs.filter(r=>r.compa>=0.90&&r.compa<0.95).length, '#E08A87'],
+    ['0.95 – 1.00', rs.filter(r=>r.compa>=0.95&&r.compa<1.00).length, '#8FB9A9'],
+    ['1.00 – 1.05', rs.filter(r=>r.compa>=1.00&&r.compa<1.05).length, '#4A8A75'],
+    ['1.05 – 1.10', rs.filter(r=>r.compa>=1.05&&r.compa<=1.10).length, '#3C7160'],
+    ['Above Market (>1.10)', rs.filter(r=>r.compa>1.10).length, '#C08A2E']
+  ];
+  const max = Math.max(...buckets.map(b=>b[1]), 1);
+  return buckets.map(b=>`<div class="drow"><div class="nm">${b[0]}</div>
+    <div class="track"><div class="bar" style="width:${b[1]/max*100}%;background:${b[2]}">${b[1]?b[1]:''}</div></div>
+    <div class="ct">${(b[1]/rs.length*100).toFixed(0)}%</div></div>`).join('');
+}
+
+/* ---------- entity panels ---------- */
+ENTS.forEach(e=>{
+  const rs = DATA[e].roles, a = agg(rs);
+  const el = document.getElementById('p-'+cssId(e));
+  el.innerHTML = `
+  <p class="lede"><strong>${e}</strong> — ${DATA[e].meta.profile}. ${a.n} roles benchmarked against
+  market data effective September 2026. Click any role for full benchmark detail.</p>
+  <div class="stats">
+    <div class="stat"><div class="k">Roles</div><div class="v">${a.n}</div><div class="s">${DATA[e].meta.short}</div></div>
+    <div class="stat"><div class="k">Compa-Ratio</div><div class="v ${a.port>=0.97&&a.port<=1.03?'teal':'amber'}">${a.port.toFixed(3)}</div><div class="s">Base vs. midpoint</div></div>
+    <div class="stat"><div class="k">Market Competitive</div><div class="v teal">${a.ok} <span style="font-size:15px;color:var(--muted);font-weight:600">of ${a.n}</span></div><div class="s">${a.lo} below · ${a.hi} above</div></div>
+    <div class="stat"><div class="k">Gap to Midpoint</div><div class="v ${a.gap>0?'red':'teal'}">${money(Math.abs(a.gap))}</div><div class="s">${a.gap>0?'Under':'Over'} midpoint</div></div>
+    <div class="stat"><div class="k">Base Spend</div><div class="v">${money(a.cur)}</div><div class="s">Midpoint ${money(a.mid)}</div></div>
+  </div>
+  <h2 class="sec">Market Position Distribution</h2>
+  <div class="dist">${distRows(rs)}</div>
+  <h2 class="sec">Roles</h2>
+  ${tableBlock(e, rs, false)}`;
+  wireTable(e, rs, false);
+});
+
+/* ---------- table ---------- */
+function tableBlock(key, rs, showEntity){
+  const id = cssId(key);
+  return `<div class="tools">
+    <div class="search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="q-${id}" placeholder="Search roles, benchmarks, or job codes…">
+    </div>
+    ${showEntity?`<select id="e-${id}"><option value="">All entities</option>${ENTS.map(e=>`<option>${e}</option>`).join('')}</select>`:''}
+    <select id="f-${id}">
+      <option value="">All market positions</option>
+      <option value="lo">Below market</option>
+      <option value="ok">Market competitive</option>
+      <option value="hi">Above market</option>
+    </select>
+  </div>
+  <div class="tablewrap"><div class="scroll"><table>
+    <thead><tr>
+      <th data-s="title">Role</th>
+      ${showEntity?'<th data-s="entity">Entity</th>':''}
+      <th data-s="loc">Market</th>
+      <th class="num" data-s="cur">Current Base</th>
+      <th class="num" data-s="mid">Midpoint</th>
+      <th class="ctr">Range Position</th>
+      <th class="num" data-s="compa">Compa</th>
+      <th class="ctr" data-s="compa">Position</th>
+    </tr></thead>
+    <tbody id="tb-${id}"></tbody>
+  </table></div></div>`;
+}
+
+function wireTable(key, rs, showEntity){
+  const id = cssId(key);
+  const tb = document.getElementById('tb-'+id);
+  const q = document.getElementById('q-'+id);
+  const f = document.getElementById('f-'+id);
+  const esel = showEntity ? document.getElementById('e-'+id) : null;
+  let sortKey = 'title', dir = 1;
+
+  function val(r,k){ return k==='mid'?r.l[1] : k==='entity'?r.entity : r[k]; }
+
+  function draw(){
+    const term = q.value.trim().toLowerCase();
+    const pos = f.value, ent = esel ? esel.value : '';
+    let out = rs.filter(r=>{
+      if(ent && r.entity!==ent) return false;
+      if(pos==='lo'&&!(r.compa<0.90)) return false;
+      if(pos==='hi'&&!(r.compa>1.10)) return false;
+      if(pos==='ok'&&!(r.compa>=0.90&&r.compa<=1.10)) return false;
+      if(!term) return true;
+      return (r.title+' '+r.bench+' '+r.code+' '+r.loc).toLowerCase().includes(term);
+    });
+    out.sort((a,b)=>{
+      const x=val(a,sortKey), y=val(b,sortKey);
+      return (typeof x==='string' ? x.localeCompare(y) : x-y) * dir;
+    });
+    if(!out.length){ tb.innerHTML = `<tr><td colspan="9" class="empty">No roles match those filters.</td></tr>`; return; }
+    tb.innerHTML = out.map(r=>{
+      const [lo,mid,hi] = r.l;
+      const span = hi-lo, padded = span*0.28;
+      const min = lo-padded, max = hi+padded, W = max-min;
+      const posPct = Math.max(0, Math.min(100, (r.cur-min)/W*100));
+      return `<tr data-k="${r.entity}|${r.code}|${r.title.replace(/"/g,'&quot;')}">
+        <td><div class="t">${r.title}</div><div class="b">${r.bench} · ${r.code}</div></td>
+        ${showEntity?`<td><div class="b" style="font-weight:600;color:var(--ink)">${r.entity}</div></td>`:''}
+        <td><div class="b" style="color:var(--ink)">${r.loc}</div></td>
+        <td class="num mono">${money(r.cur)}</td>
+        <td class="num mono">${money(mid)}</td>
+        <td><div class="rb">
+          <div class="fill" style="left:${(lo-min)/W*100}%;width:${span/W*100}%"></div>
+          <div class="mid" style="left:${(mid-min)/W*100}%"></div>
+          <div class="dot" style="left:${posPct}%;background:${bcol(r.compa)}"></div>
+        </div></td>
+        <td class="num mono" style="font-weight:700;color:${bcol(r.compa)}">${r.compa.toFixed(3)}</td>
+        <td class="ctr"><span class="badge ${bcls(r.compa)}">${band(r.compa)}</span></td>
+      </tr>`;
+    }).join('');
+  }
+
+  q.addEventListener('input', draw);
+  f.addEventListener('change', draw);
+  if(esel) esel.addEventListener('change', draw);
+  tb.closest('table').querySelectorAll('thead th[data-s]').forEach(th=>{
+    th.addEventListener('click', ()=>{
+      const k = th.dataset.s;
+      if(k===sortKey) dir = -dir; else { sortKey = k; dir = 1; }
+      draw();
+    });
+  });
+  tb.addEventListener('click', e=>{
+    const tr = e.target.closest('tr[data-k]'); if(!tr) return;
+    const [ent, code, title] = tr.dataset.k.split('|');
+    const r = ALL.find(x=>x.entity===ent && x.code===code && x.title===title);
+    if(r) openDrawer(r);
+  });
+  draw();
+}
+
+/* ---------- drawer ---------- */
+const ovl = document.getElementById('ovl'), drawer = document.getElementById('drawer');
+function closeDrawer(){ drawer.classList.remove('on'); ovl.classList.remove('on'); drawer.setAttribute('aria-hidden','true'); }
+ovl.addEventListener('click', closeDrawer);
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeDrawer(); });
+
+function openDrawer(r){
+  const [lo,mid,hi] = r.l, [ulo,umid,uhi] = r.us;
+  const span=hi-lo, pad=span*0.28, min=lo-pad, max=hi+pad, W=max-min;
+  const posPct = Math.max(0,Math.min(100,(r.cur-min)/W*100));
+  const bonusAmt = Math.round(mid*r.bonus);
+  drawer.innerHTML = `
+  <div class="dhd">
+    <div>
+      <h3>${r.title}</h3>
+      <div class="sub">${r.bench} &nbsp;·&nbsp; ${r.code}<br>${r.entity} &nbsp;·&nbsp; ${r.loc} &nbsp;·&nbsp; Bonus target ${pct(r.bonus)}</div>
+    </div>
+    <button class="x" id="xbtn" aria-label="Close">✕</button>
+  </div>
+  <div class="dbody">
+    ${r.note?`<div class="note">${r.note}</div>`:''}
+    <div class="kv">
+      <div class="c"><div class="k">Current Base</div><div class="v">${money(r.cur)}</div></div>
+      <div class="c"><div class="k">Total Cash @ Midpoint</div><div class="v">${money(r.ote)}</div></div>
+      <div class="c"><div class="k">Compa-Ratio</div><div class="v" style="color:${bcol(r.compa)}">${r.compa.toFixed(3)}</div></div>
+      <div class="c"><div class="k">Market Position</div><div class="v" style="color:${bcol(r.compa)};font-size:15px">${band(r.compa)}</div></div>
+    </div>
+
+    <div class="viz">
+      <div class="lbl"><span>${money(lo)}</span><span style="font-weight:700;color:var(--ink)">Midpoint ${money(mid)}</span><span>${money(hi)}</span></div>
+      <div class="rb" style="height:11px">
+        <div class="fill" style="left:${(lo-min)/W*100}%;width:${span/W*100}%"></div>
+        <div class="mid" style="left:${(mid-min)/W*100}%"></div>
+        <div class="dot" style="left:${posPct}%;background:${bcol(r.compa)};width:15px;height:15px"></div>
+      </div>
+      <div class="lbl" style="margin:9px 0 0"><span>25th percentile</span><span>Current base ${money(r.cur)}</span><span>75th percentile</span></div>
+    </div>
+
+    <h2 class="sec" style="margin-top:0">Market Compensation Ranges</h2>
+    <table class="mt">
+      <thead><tr><th>${r.loc}</th><th>25th</th><th>Midpoint</th><th>75th</th></tr></thead>
+      <tbody>
+        <tr class="hl"><td>Base salary</td><td>${money(lo)}</td><td>${money(mid)}</td><td>${money(hi)}</td></tr>
+        <tr><td>Total cash @ ${pct(r.bonus)}</td><td>${money(lo*(1+r.bonus))}</td><td>${money(mid*(1+r.bonus))}</td><td>${money(hi*(1+r.bonus))}</td></tr>
+      </tbody>
+    </table>
+    <table class="mt">
+      <thead><tr><th>United States</th><th>25th</th><th>Midpoint</th><th>75th</th></tr></thead>
+      <tbody>
+        <tr><td>Base salary</td><td>${money(ulo)}</td><td>${money(umid)}</td><td>${money(uhi)}</td></tr>
+        <tr><td>Total cash @ ${pct(r.bonus)}</td><td>${money(ulo*(1+r.bonus))}</td><td>${money(umid*(1+r.bonus))}</td><td>${money(uhi*(1+r.bonus))}</td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="sec">Annual Incentive</h2>
+    <div class="note" style="background:var(--card);border-color:var(--line)">
+      At the ${r.loc.split(',')[0]} midpoint, a ${pct(r.bonus)} target equals <strong>${money(bonusAmt)}</strong>,
+      bringing total target cash to <strong>${money(r.ote)}</strong>.
+      Local midpoint runs ${mid>=umid?'above':'below'} the national midpoint of ${money(umid)}
+      (${((mid/umid-1)*100).toFixed(1)}% ${mid>=umid?'premium':'discount'}).
+    </div>
+  </div>`;
+  document.getElementById('xbtn').addEventListener('click', closeDrawer);
+  drawer.classList.add('on'); ovl.classList.add('on'); drawer.setAttribute('aria-hidden','false');
+  drawer.scrollTop = 0;
+}
+
+renderOverview();
+</script>
+</body>
+</html>
